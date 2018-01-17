@@ -125,8 +125,8 @@ Vagrant.configure("2") do |config|
     chown -R vagrant /go/pkg /go/bin
     chmod -R 777 /go/pkg /go/bin
 
-    chown vagrant /go/src
-    chmod 777 /go/src
+    chown vagrant /go/src /go/src/github.com
+    chmod 777 /go/src /go/src/github.com
   SHELL
 
   config.vm.provision "shell", run: "always", inline: <<~SHELL
