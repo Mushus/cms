@@ -1,12 +1,7 @@
 package cms
 
 type ContentStore interface {
-	Save(id string, data ContentData) error
-	Restore(id string) (ContentData, error)
+	Save(id string, data interface{}) error
+	Restore(id string) (interface{}, error)
 	Close()
-}
-
-type ContentData interface {
-	Encode([]byte) error
-	Decode() ([]byte, error)
 }

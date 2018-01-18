@@ -1,37 +1,55 @@
 package store
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/Mushus/cms"
 	"github.com/boltdb/bolt"
 )
 
 type boltStore struct {
 	db *bolt.DB
-	cr ContentRegistory
+	cr *ContentRegistry
 }
 
-func NewBoltStore(path string) (*boltStore, error) {
-	db, err := bolt.Open(path, 0600, nil)
-	if err != nil {
-		return nil, fmt.Errorf("cannot open store: %v", err)
-	}
+func NewBoltStore(db *bolt.DB) (*boltStore, error) {
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("content"))
+		return err
+	})
 
 	return &boltStore{
 		db: db,
 	}, nil
 }
 
-func (s *boltStore) SetDataRegistory(cr ContentRegistory) {
+func (s *boltStore) SetContentRegistry(cr *ContentRegistry) {
 	s.cr = cr
 }
 
-func (s boltStore) Save(id string, data cms.ContentData) error {
+func (s boltStore) Save(id string, data interface{}) error {
+	typ := s.cr.GetType(data)
+	sv := SaveData{
+		Type: typ,
+		Data: data,
+	}
+	b, err := json.Marshal(sv)
+	if err != nil {
+		return fmt.Errorf("cannot encode save data: %v", err)
+	}
+	s.db.Update(func(tx *bolt.Tx) error {
+		if content := tx.Bucket([]byte("content")); content != nil {
+			if err := content.Put([]byte(id), b); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
 	return nil
 }
 
-func (s boltStore) Restore(id string) (cms.ContentData, error) {
+func (s boltStore) Restore(id string) (interface{}, error) {
 	return nil, nil
 }
 
