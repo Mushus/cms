@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Mushus/cms"
+	"github.com/Mushus/cms/interface/web"
 	"github.com/Mushus/cms/store"
 	"github.com/boltdb/bolt"
 )
@@ -12,7 +13,7 @@ func main() {
 	cr := store.NewContentRegistry()
 	cr.Register("markdown", Markdown{})
 
-	db, err := bolt.Open("./content.db", 0600, nil)
+	db, err := bolt.Open("../content.db", 0666, nil)
 	if err != nil {
 		log.Fatalf("cannot open store: %v", err)
 	}
@@ -25,6 +26,7 @@ func main() {
 
 	c := cms.New()
 	c.SetContentStore(bstore)
-	s := cms.NewServer(c)
-	s.Start()
+
+	s := web.NewServer(c)
+	log.Fatal(s.Start())
 }

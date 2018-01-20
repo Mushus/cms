@@ -16,7 +16,9 @@ type (
 )
 
 func NewContentRegistry() *ContentRegistry {
-	return &ContentRegistry{}
+	return &ContentRegistry{
+		registry: make(map[string]registry),
+	}
 }
 
 func (c *ContentRegistry) Register(name string, data interface{}) {

@@ -80,9 +80,9 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
   if OS.windows?
-    config.vm.synced_folder "./", "/go/src/github.com/mushus/cms", type: "virtualbox", mount_options: ['dmode=777','fmode=777']
+    config.vm.synced_folder "./", "/go/src/github.com/Mushus/cms", type: "virtualbox", mount_options: ['dmode=777','fmode=777']
   else
-    config.vm.synced_folder "./", "/go/src/github.com/mushus/cms", type: "nfs"
+    config.vm.synced_folder "./", "/go/src/github.com/Mushus/cms", type: "nfs"
   end
 
   # Provider-specific configuration so you can fine-tune various
